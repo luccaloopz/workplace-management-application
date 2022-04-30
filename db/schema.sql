@@ -5,7 +5,7 @@ USE workplace_db;
 
 CREATE TABLE departments (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) NOT NULL
+    dep_name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE roles (
@@ -13,7 +13,7 @@ CREATE TABLE roles (
     title VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,
     department_id INT,
-    FOREIGN KEY department_id
+    FOREIGN KEY (department_id)
     REFERENCES departments(id)
     ON DELETE SET NULL
 );
@@ -23,11 +23,11 @@ CREATE TABLE employees (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INT,
-    FOREIGN KEY role_id
+    manager_id INT,
+    FOREIGN KEY (role_id)
     REFERENCES roles(id)
     ON DELETE SET NULL,
-    manager_id INT
-    -- FOREIGN KEY manager_id 
-    -- REFERENCES employees(id)
-    -- ON DELETE SET NULL ----> not sure if these three lines are correct
+    FOREIGN KEY (manager_id)
+    REFERENCES employees(id)
+    ON DELETE SET NULL
 );
