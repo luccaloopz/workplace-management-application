@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 
 const Departments = require('./lib/Departments');
+const Roles = require('./lib/Roles');
 
 const firstQuestion = [
     {
@@ -35,6 +36,9 @@ function init() { // How do I make it so that when I recall init() after I finis
                 const departments = new Departments;
                 departments.addDepartment(answers.depName);
             });
+        } else if (answers.choices === "View Roles") {
+            const roles = new Roles;
+            roles.getRoles();
         }
     });
 };
