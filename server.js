@@ -4,6 +4,7 @@ const db = require('./sqlconnect');
 
 const Departments = require('./lib/Departments');
 const Roles = require('./lib/Roles');
+const Employees = require('./lib/Employees');
 
 const firstQuestion = [
     {
@@ -85,6 +86,9 @@ function init() { // How do I make it so that when I recall init() after I finis
                     roles.addRole();
                 });
             });
+        } else if (answers.choices === "View Employees") {
+            const employees = new Employees;
+            employees.getEmployees();
         }
     });
 };
