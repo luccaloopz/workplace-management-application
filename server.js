@@ -62,7 +62,7 @@ const addEmployee = [
     {
         type: "list",
         message: "Who is the employee's manager?",
-        choices: [],
+        choices: ["None"],
         name: "employeeManager"
     }
 ];
@@ -138,7 +138,6 @@ function init() { // How do I make it so that when I recall init() after I finis
             inquirer
             .prompt(addEmployee)
             .then((answers) => {
-                console.log(answers)
                 const roles = new Roles(answers.employeeRole);
                 roles.getSpecificRoleID((err, data) => {
                     if (err) {
@@ -148,21 +147,27 @@ function init() { // How do I make it so that when I recall init() after I finis
                     let roleId = JSON.stringify(data[0].id);
 
                     let nameArr = answers.employeeManager.split(' ');
-                    let firstName = nameArr[0];
-                    let lastName = nameArr[1];
 
-                    const employees1 = new Employees(firstName, lastName);
-                    employees1.getSpecificManagerID((err, data) => {
-                        if (err) {
-                            console.log(err)
-                        };
+                    if (nameArr.length === 2) {
+                        let firstName = nameArr[0];
+                        let lastName = nameArr[1];
 
-                        let managerId = JSON.stringify(data[0].id);
+                        const employees1 = new Employees(firstName, lastName);
+                        employees1.getSpecificManagerID((err, data) => {
+                            if (err) {
+                                console.log(err)
+                            };
 
-                        const employees2 = new Employees(answers.employeeFirst, answers.employeeLast, roleId, managerId);
-                        employees2.addEmployee();
-                    });
+                            let managerId = JSON.stringify(data[0].id);
 
+                            const employees2 = new Employees(answers.employeeFirst, answers.employeeLast, roleId, managerId);
+                            employees2.addEmployee();
+                        });
+                    } else if (nameArr.length === 1) {
+                        const employees3 = new Employees(answers.employeeFirst, answers.employeeLast, roleId);
+                        employees3.addManager();
+                    };
+                
                 });
             });
         }
