@@ -206,16 +206,16 @@ function init() {
                     .then((answers) => {
                         const roles = new Roles(answers.listOfEmployeeRoles);
                         roles.getSpecificRoleID().then(([data]) => {
-                            let employeesRoleId = JSON.stringify(data[0].id);
+                            let employeesRoleId = JSON.stringify(data[0].id); 
 
                             let employeeNameArr = answers.listOfEmployees.split(' ');
                             let firstEmpName = employeeNameArr[0];
                             let lastEmpName = employeeNameArr[1];
 
                             const employees = new Employees(firstEmpName, lastEmpName, employeesRoleId);
-                            employees.updateEmployeeRole().then(() => {
-                                init();
-                            });
+                                employees.updateEmployeeRole().then(() => {
+                                    init();
+                                });
                         });
                     });
                 });
