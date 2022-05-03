@@ -42,6 +42,31 @@ const addRole = [
     }
 ];
 
+const addEmployee = [
+    {
+        type: "input",
+        message: "What is the employee's first name?",
+        name: "employeeFirst"
+    },
+    {
+        type: "input",
+        message: "What is the employee's last name?",
+        name: "employeeLast"
+    },
+    {
+        type: "list",
+        message: "What is the employee's role?",
+        choices: [],
+        name: "employeeRole"
+    },
+    {
+        type: "list",
+        message: "Who is the employee's manager?",
+        choices: [],
+        name: "employeeManager"
+    }
+];
+
 function init() { // How do I make it so that when I recall init() after I finish adding to or viewing a table, the table isn't formatted weirdly on the command-line questioning? see comments below... 
     inquirer
     .prompt(firstQuestion)
@@ -89,6 +114,57 @@ function init() { // How do I make it so that when I recall init() after I finis
         } else if (answers.choices === "View Employees") {
             const employees = new Employees;
             employees.getEmployees();
+        } else if (answers.choices === "Add Employee") {
+            db.query("SELECT title FROM roles", (err, data) => {
+                if (err) {
+                    console.log(err)
+                };
+
+                for (let i = 0; i < data.length; i++) {
+                    addEmployee[2].choices.push(data[i].title);
+                };
+            });
+
+            db.query("SELECT CONCAT(first_name, ' ', last_name) AS name FROM employees", (err, data) => {
+                if (err) {
+                    console.log(err)
+                };
+
+                for (let i = 0; i < data.length; i++) {
+                    addEmployee[3].choices.push(data[i].name);
+                };
+            });
+
+            inquirer
+            .prompt(addEmployee)
+            .then((answers) => {
+                console.log(answers)
+                const roles = new Roles(answers.employeeRole);
+                roles.getSpecificRoleID((err, data) => {
+                    if (err) {
+                        console.log(err)
+                    };
+
+                    let roleId = JSON.stringify(data[0].id);
+
+                    let nameArr = answers.employeeManager.split(' ');
+                    let firstName = nameArr[0];
+                    let lastName = nameArr[1];
+
+                    const employees1 = new Employees(firstName, lastName);
+                    employees1.getSpecificManagerID((err, data) => {
+                        if (err) {
+                            console.log(err)
+                        };
+
+                        let managerId = JSON.stringify(data[0].id);
+
+                        const employees2 = new Employees(answers.employeeFirst, answers.employeeLast, roleId, managerId);
+                        employees2.addEmployee();
+                    });
+
+                });
+            });
         }
     });
 };
